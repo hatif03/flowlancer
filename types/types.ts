@@ -12,7 +12,7 @@ export interface Member {
 }
 
 // Board related interfaces
-export interface BoardView {
+export interface View {
   id: bigint;
   creator: `0x${string}`;
   name: string;

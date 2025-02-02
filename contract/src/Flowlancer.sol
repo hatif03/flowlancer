@@ -4,13 +4,15 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "./Storage.sol";
+import "./View.sol";
 
 contract Flowlancer is
     Initializable,
     AccessControlUpgradeable,
     UUPSUpgradeable,
-    BoardStorage,
-    BoardView,
+    Storage,
+    View,
     TaskManager,
     SubmissionManager
 {
@@ -226,8 +228,8 @@ contract Flowlancer is
     function isBoardMember(
         uint256 _boardId,
         address _member
-    ) public view override(BoardView, SubmissionManager) returns (bool) {
-        return BoardView.isBoardMember(_boardId, _member);
+    ) public view override(View, SubmissionManager) returns (bool) {
+        return View.isBoardMember(_boardId, _member);
     }
 
     // Function to set the signer address
