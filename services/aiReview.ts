@@ -247,5 +247,81 @@ ${fileContents.join('\n\n')}`;
     return contents.join('\n\n');
   }
 
+  private async callAIAPI(content: string, taskName: string, taskDescription: string, aiReviewPrompt: string, boardConfig?: BoardConfig): Promise<{ approved: boolean, reviewComment: string }> {
+    try {
+      const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+      const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
+      // 构建结构化的提示词
+      const prompt = {
+        task_info: {
+          name: taskName,
+          description: taskDescription,
+          review_prompt: aiReviewPrompt
+        },
+        submission_content: content,
+        review_instructions: "Review the submission and return a JSON object WITHOUT markdown formatting. The response must be a valid JSON object with the following structure: { decision: 'APPROVED' or 'REJECTED', comment: 'explanation', confidence_score: number between 0 and 1 }",
+        example_response: {
+          decision: "APPROVED",
+          comment: "The submission meets all requirements",
+          confidence_score: 0.95
+        }
+      };
+
+      const response = await fetch(`${GEMINI_API_URL}?key=${GOOGLE_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: JSON.stringify(prompt)
+            }]
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get Gemini API response');
+      }
+
+      const data = await response.json();
+      let result = data.candidates[0].content.parts[0].text;
+
+      // 清理响应文本，移除可能的 markdown 标记
+      result = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+      try {
+        const parsedResult = JSON.parse(result);
+        const isApproved = parsedResult.decision === 'APPROVED';
+
+        return {
+          approved: isApproved,
+          reviewComment: parsedResult.comment || (isApproved ? 'Approved' : 'Rejected')
+        };
+      } catch (error) {
+        console.error('Error parsing Gemini response:', error);
+        console.log('Raw response:', result);
+
+        // 如果解析失败，尝试使用简单的文本匹配
+        const isApproved = result.toLowerCase().includes('approved');
+        const comment = result.split('\n').find((line: string) =>
+          line.toLowerCase().includes('comment') ||
+          line.toLowerCase().includes('explanation')
+        ) || 'Review completed';
+
+        return {
+          approved: isApproved,
+          reviewComment: comment.replace(/^[^:]*:\s*/, '').trim()
+        };
+      }
+    } catch (error) {
+      console.error('Error in AI review:', error);
+      return {
+        approved: false,
+        reviewComment: 'Error processing AI review response'
+      };
+    }
+  }
 }
