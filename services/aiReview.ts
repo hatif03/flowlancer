@@ -324,4 +324,26 @@ ${fileContents.join('\n\n')}`;
       };
     }
   }
+
+  public async review(request: AIReviewRequest): Promise<AIReviewResponse> {
+    try {
+      const content = await this.getContentToReview(
+        request.proofTypes,
+        request.proofData,
+        request.taskConfig,
+        request.boardConfig
+      );
+      console.log('Content to review:', content);
+      return await this.callAIAPI(
+        content,
+        request.taskName,
+        request.taskDescription,
+        request.aiReviewPrompt,
+        request.boardConfig
+      );
+    } catch (error) {
+      console.error('AI Review error:', error);
+      throw error;
+    }
+  }
 }
