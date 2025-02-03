@@ -153,7 +153,7 @@ ${fileContents.join('\n\n')}`;
               let content = '';
 
               if (network.startsWith('Flow EVM')) {
-                // BlockScout API 调用
+                // BlockScout API calls
                 try {
                   const response = await fetch(
                     `${apiUrl}/smart-contracts/${proofData.contract}`
@@ -164,7 +164,7 @@ ${fileContents.join('\n\n')}`;
                   if (data.source_code) {
                     const sourceCode = data.source_code;
 
-                    // 尝试解析多文件合约
+                    // Try parsing a multi-file contract
                     try {
                       const parsedSource = JSON.parse(sourceCode);
                       content = Object.entries(parsedSource)
@@ -180,7 +180,7 @@ ${fileContents.join('\n\n')}`;
                         })
                         .join('\n\n');
                     } catch (e) {
-                      // 如果不是多文件格式，直接使用源代码
+                      // If it is not a multi-file format, use the source code directly
                       content = sourceCode;
                     }
                   } else {
@@ -191,7 +191,7 @@ ${fileContents.join('\n\n')}`;
                   throw new Error(`Failed to fetch contract source code: ${error.message}`);
                 }
               } else {
-                // 原有的 Etherscan 风格 API 调用
+                // Original Etherscan style API calls
                 const response = await fetch(
                   `${apiUrl}?module=contract&action=getsourcecode&address=${proofData.contract}&apikey=${apiKey || ''}`
                 );
@@ -252,7 +252,7 @@ ${fileContents.join('\n\n')}`;
       const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
       const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
-      // 构建结构化的提示词
+      // Build structured prompt words
       const prompt = {
         task_info: {
           name: taskName,
@@ -289,7 +289,7 @@ ${fileContents.join('\n\n')}`;
       const data = await response.json();
       let result = data.candidates[0].content.parts[0].text;
 
-      // 清理响应文本，移除可能的 markdown 标记
+      // Clean response text, removing possible markdown markup
       result = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
       try {
@@ -304,7 +304,7 @@ ${fileContents.join('\n\n')}`;
         console.error('Error parsing Gemini response:', error);
         console.log('Raw response:', result);
 
-        // 如果解析失败，尝试使用简单的文本匹配
+        // If parsing fails, try using simple text matching
         const isApproved = result.toLowerCase().includes('approved');
         const comment = result.split('\n').find((line: string) =>
           line.toLowerCase().includes('comment') ||
