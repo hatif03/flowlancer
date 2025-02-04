@@ -238,7 +238,319 @@ export default function CreateTaskModal({
     tokenSymbol
   ]);
 
+  const taskTypes = [
+    'Plain Text',
+    'Image',
+    'Github Pull Request',
+    'Contract Verification',
+    'X Post',
+    'X Follow',
+    'X Retweet',
+    'X Like',
+    'Join Discord'
+  ];
 
+  const handleTypeSelect = (type: string) => {
+    setSelectedTypes(prev => {
+      const newTypes = prev.includes(type)
+        ? prev.filter(t => t !== type)
+        : [...prev, type];
+      setTaskConfig(current => ({ ...current, taskType: newTypes as any }));
+      return newTypes;
+    });
+  };
+
+  const hasAIReviewableType = selectedTypes.some(type =>
+    AI_REVIEWABLE_TYPES.includes(type)
+  );
+
+  const shouldShowSelfCheck = selectedTypes.length > 0 &&
+    (!hasAIReviewableType || (hasAIReviewableType && taskConfig.aiReview));
+
+  useEffect(() => {
+    if (!shouldShowSelfCheck) {
+      setTaskDetails(prev => ({ ...prev, allowSelfCheck: false }));
+    }
+  }, [shouldShowSelfCheck]);
+
+  const renderConfigFields = () => {
+    return (
+      <div className="space-y-4">
+        {hasAIReviewableType && (
+          <div className="space-y-4 border p-4 rounded-lg">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="aiReview"
+                checked={taskConfig.aiReview || false}
+                onCheckedChange={(checked) =>
+                  setTaskConfig(prev => ({
+                    ...prev,
+                    aiReview: checked as boolean,
+                  }))
+                }
+              />
+              <label htmlFor="aiReview">Enable AI Review</label>
+            </div>
+
+            {taskConfig.aiReview && (
+              <Textarea
+                placeholder="AI Review Prompt (e.g., Check if the submission meets the following criteria...)"
+                value={taskConfig.aiReviewPrompt || ''}
+                onChange={(e) => setTaskConfig(prev => ({
+                  ...prev,
+                  aiReviewPrompt: e.target.value
+                }))}
+                className="mt-2"
+              />
+            )}
+          </div>
+        )}
+
+        {selectedTypes.includes('Contract Verification') && (
+          <div className="space-y-4">
+            <Select onValueChange={(value) => setTaskConfig(prev => ({
+              ...prev,
+              contractNetwork: value as any
+            }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Network" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Flow EVM">Flow EVM</SelectItem>
+                <SelectItem value="Flow EVM Testnet">Flow EVM Testnet</SelectItem>
+                <SelectItem value="Mantle">Mantle</SelectItem>
+                <SelectItem value="Mantle Sepolia">Mantle Sepolia</SelectItem>
+                <SelectItem value="Linea">Linea</SelectItem>
+                <SelectItem value="Linea Sepolia">Linea Sepolia</SelectItem>
+                <SelectItem value="Ethereum">Ethereum</SelectItem>
+                <SelectItem value="Sepolia">Sepolia</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {selectedTypes.includes('X Post') && (
+          <div className="space-y-2">
+            <label htmlFor="xPostContent" className="text-sm font-medium">
+              Required Post Content
+            </label>
+            <Input
+              id="xPostContent"
+              placeholder="Enter the required content for the post"
+              value={taskConfig.XPostContent || ''}
+              onChange={(e) => setTaskConfig(prev => ({
+                ...prev,
+                XPostContent: e.target.value
+              }))}
+            />
+          </div>
+        )}
+
+        {selectedTypes.includes('X Follow') && (
+          <div className="space-y-2">
+            <label htmlFor="xFollowUsername" className="text-sm font-medium">
+              X Username to Follow
+            </label>
+            <Input
+              id="xFollowUsername"
+              placeholder="Enter username without @ (e.g., elonmusk)"
+              value={taskConfig.XFollowUsername || ''}
+              onChange={(e) => setTaskConfig(prev => ({
+                ...prev,
+                XFollowUsername: e.target.value
+              }))}
+            />
+          </div>
+        )}
+
+        {selectedTypes.includes('X Like') && (
+          <div className="space-y-2">
+            <label htmlFor="xLikeId" className="text-sm font-medium">
+              X ID to Like
+            </label>
+            <div className="space-y-1">
+              <Input
+                id="xLikeId"
+                placeholder="Enter the X ID (e.g., 1234567890)"
+                value={taskConfig.XLikeId || ''}
+                onChange={(e) => setTaskConfig(prev => ({
+                  ...prev,
+                  XLikeId: e.target.value
+                }))}
+              />
+              <p className="text-xs text-muted-foreground">
+                The X ID can be found in the X URL after /status/
+              </p>
+            </div>
+          </div>
+        )}
+
+        {selectedTypes.includes('X Retweet') && (
+          <div className="space-y-2">
+            <label htmlFor="xRetweetId" className="text-sm font-medium">
+              X ID to Retweet
+            </label>
+            <div className="space-y-1">
+              <Input
+                id="xRetweetId"
+                placeholder="Enter the X ID (e.g., 1234567890)"
+                value={taskConfig.XRetweetId || ''}
+                onChange={(e) => setTaskConfig(prev => ({
+                  ...prev,
+                  XRetweetId: e.target.value
+                }))}
+              />
+              <p className="text-xs text-muted-foreground">
+                The X ID can be found in the X URL after /status/
+              </p>
+            </div>
+          </div>
+        )}
+
+        {selectedTypes.includes('Join Discord') && (
+          <div className="space-y-2">
+            <label htmlFor="discordChannelId" className="text-sm font-medium">
+              Discord Server Settings
+            </label>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <Input
+                  id="discordChannelId"
+                  placeholder="Enter the Discord server ID"
+                  value={taskConfig.DiscordChannelId || ''}
+                  onChange={(e) => setTaskConfig(prev => ({
+                    ...prev,
+                    DiscordChannelId: e.target.value
+                  }))}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Enable Developer Mode in Discord to copy server ID
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <Input
+                  id="discordInviteLink"
+                  placeholder="Enter the Discord invite link"
+                  value={taskConfig.DiscordInviteLink || ''}
+                  onChange={(e) => setTaskConfig(prev => ({
+                    ...prev,
+                    DiscordInviteLink: e.target.value
+                  }))}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Create an invite link in Discord server settings
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {shouldShowSelfCheck && (
+          <div className="flex items-center space-x-2 border p-4 rounded-lg">
+            <Checkbox
+              id="allowSelfCheck"
+              checked={taskDetails.allowSelfCheck}
+              onCheckedChange={(checked) =>
+                setTaskDetails(prev => ({
+                  ...prev,
+                  allowSelfCheck: checked as boolean
+                }))
+              }
+            />
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor="allowSelfCheck"
+                className="text-sm font-medium leading-none"
+              >
+                Allow Self Check
+              </label>
+              <p className="text-sm text-muted-foreground">
+                Enable users to self-verify their task completion
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const handleNextStep = async () => {
+    if (step === 1) {
+      if (taskConfig.aiReview && !taskConfig.aiReviewPrompt) {
+        toast({
+          title: "Error",
+          description: "Please provide an AI Review prompt",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!taskBasicInfo.name || !taskBasicInfo.description || selectedTypes.length === 0) {
+        toast({
+          title: "Error",
+          description: "Please fill in all required fields",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (selectedTypes.includes('Join Discord') &&
+          (!taskConfig.DiscordChannelId || !taskConfig.DiscordInviteLink)) {
+        toast({
+          title: "Error",
+          description: "Please fill in all Discord server information",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!shouldShowSelfCheck) {
+        setTaskDetails(prev => ({
+          ...prev,
+          allowSelfCheck: false
+        }));
+      }
+
+      setStep(2);
+    } else {
+      if (!taskDetails.maxCompletions || !taskDetails.rewardAmount) {
+        toast({
+          title: "Error",
+          description: "Please fill in all required fields",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        const finalData: CreateTaskParams = {
+          ...taskBasicInfo,
+          deadline: Math.floor(taskDetails.deadline.getTime()),
+          maxCompletions: taskDetails.maxCompletions,
+          rewardAmount: taskDetails.rewardAmount,
+          allowSelfCheck: shouldShowSelfCheck ? taskDetails.allowSelfCheck : false,
+          config: JSON.stringify(taskConfig),
+          boardId: initialData?.taskDetails.boardId || BigInt(0),
+        };
+
+        const result = await onSubmit(finalData);
+
+        if (result?.hash) {
+          setTransactionHash(result.hash);
+        }
+      } catch (error) {
+        console.error("Error creating task:", error);
+        toast({
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to create task",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+      }
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
