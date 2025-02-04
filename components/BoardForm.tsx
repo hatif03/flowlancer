@@ -38,6 +38,103 @@ interface FormData {
 
 export default function BoardForm({ initialData, onSubmit, mode, redirectPath = '/boards', isDialog = false }: BoardFormProps) {
 
+  const initialConfig = initialData?.config ? JSON.parse(initialData.config) : {};
+  const [formData, setFormData] = useState<FormData>({
+    id: initialData?.id,
+    name: initialData?.name || "",
+    description: initialData?.description || "",
+    img: initialData?.img || "",
+    tokenType: initialData?.rewardToken === zeroAddress ? 'native' : 'erc20',
+    rewardToken: initialData?.rewardToken === zeroAddress ? "" : (initialData?.rewardToken || ""),
+    channelId: initialConfig?.channelId || "",
+  });
+
+  const [transactionHash, setTransactionHash] = useState<`0x${string}`>();
+  const router = useRouter();
+  const { toast } = useToast();
+  const { chain } = useAccount();
+
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    error
+  } = useWaitForTransactionReceipt({
+    hash: transactionHash,
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const submitData = {
+        ...formData,
+        rewardToken: formData.tokenType === 'native' ? zeroAddress : formData.rewardToken,
+        config: JSON.stringify({
+          channelId: formData.channelId
+        })
+      };
+
+      if (mode === 'update' && initialData) {
+        submitData.id = initialData.id;
+      }
+
+      const result = await onSubmit(submitData);
+      if (result.hash) {
+        setTransactionHash(result.hash as `0x${string}`);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit transaction",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Monitor transaction status
+  useEffect(() => {
+    if (isConfirming) {
+      toast({
+        title: "Processing",
+        description: (
+          <div className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
+            <span>Waiting for transaction confirmation...</span>
+          </div>
+        ),
+      });
+    } else if (isConfirmed) {
+      toast({
+        title: "Success!",
+        description: `Board ${mode === 'create' ? 'created' : 'updated'} successfully.`,
+      });
+
+      // Send Discord Announcement
+      if (formData.channelId) {
+        fetch('/api/discord-announcement', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            channelId: formData.channelId,
+            type: 'board_created',
+            data: `Please introduce yourself and help us announce the new bounty board: Board Name: ${formData.name} Board Description: ${formData.description}`
+          })
+        }).catch(error => {
+          console.error('Failed to send Discord announcement:', error);
+        });
+      }
+
+      router.push(redirectPath);
+    } else if (error) {
+      toast({
+        title: "Error",
+        description: "Transaction failed",
+        variant: "destructive",
+      });
+      setTransactionHash(undefined);
+    }
+  }, [isConfirming, isConfirmed, error, mode, redirectPath, router, toast, formData]);
 
   return (
     <motion.form
