@@ -83,6 +83,161 @@ export default function CreateTaskModal({
   initialData,
   mode = 'create',
 }: CreateTaskModalProps) {
+  const [step, setStep] = useState(1);
+  const [taskConfig, setTaskConfig] = useState<Partial<TaskConfig>>({});
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+  const [taskBasicInfo, setTaskBasicInfo] = useState({
+    name: '',
+    description: '',
+  });
+  const [taskDetails, setTaskDetails] = useState<TaskDetailsState>({
+    deadline: initialData?.taskDetails.deadline
+      ? new Date(Number(initialData.taskDetails.deadline) / 1000)
+      : add(new Date(), { days: 7 }),
+    maxCompletions: initialData?.taskDetails.maxCompletions || 1,
+    rewardAmount: initialData?.taskDetails.rewardAmount || 0,
+    allowSelfCheck: initialData?.taskDetails.allowSelfCheck || false,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [transactionHash, setTransactionHash] = useState<`0x${string}` | undefined>();
+  const { toast } = useToast();
+
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    error: transactionError
+  } = useWaitForTransactionReceipt({
+    hash: transactionHash,
+  });
+
+  const resetAllStates = () => {
+    setStep(1);
+    setTaskConfig({});
+    setSelectedTypes([]);
+    setOpen(false);
+    setTaskBasicInfo({
+      name: '',
+      description: '',
+    });
+    setTaskDetails({
+      deadline: add(new Date(), { days: 7 }),
+      maxCompletions: 1,
+      rewardAmount: 0,
+      allowSelfCheck: false,
+    });
+    setIsSubmitting(false);
+    setTransactionHash(undefined);
+  };
+
+  const handleClose = () => {
+    resetAllStates();
+    onClose();
+  };
+
+  useEffect(() => {
+    if (isOpen && initialData) {
+      setTaskBasicInfo(initialData.taskBasicInfo);
+      setTaskDetails({
+        deadline: new Date(Number(initialData.taskDetails.deadline) / 1000),
+        maxCompletions: initialData.taskDetails.maxCompletions,
+        rewardAmount: initialData.taskDetails.rewardAmount,
+        allowSelfCheck: initialData.taskDetails.allowSelfCheck || false,
+      });
+      setTaskConfig(initialData.taskConfig || {});
+      setSelectedTypes(initialData.selectedTypes || []);
+    } else if (!isOpen) {
+      resetAllStates();
+    }
+  }, [isOpen, initialData]);
+
+  useEffect(() => {
+    if (isConfirming) {
+      toast({
+        title: "Processing",
+        description: (
+          <div className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
+            <span>Waiting for transaction confirmation...</span>
+          </div>
+        ),
+      });
+    } else if (isConfirmed) {
+      toast({
+        title: "Success!",
+        description: "Task created successfully.",
+      });
+      setTransactionHash(undefined);
+      onConfirmed && onConfirmed();
+      handleClose();
+    } else if (transactionError) {
+      toast({
+        title: "Error",
+        description: "Failed to create task",
+        variant: "destructive",
+      });
+      setTransactionHash(undefined);
+      setIsSubmitting(false);
+    }
+  }, [isConfirming, isConfirmed, transactionError, onConfirmed, toast]);
+
+  useEffect(() => {
+    const sendAnnouncement = async () => {
+      if (isConfirmed && boardConfig.channelId && taskBasicInfo.name && taskBasicInfo.description) {
+        try {
+          fetch('/api/discord-announcement', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              channelId: boardConfig.channelId,
+              type: mode === 'create' ? 'task_created' : 'task_updated',
+              data: {
+                taskName: taskBasicInfo.name,
+                taskDescription: taskBasicInfo.description,
+                taskTypes: selectedTypes,
+                taskConfig: taskConfig,
+                deadline: taskDetails.deadline,
+                maxCompletions: taskDetails.maxCompletions,
+                rewardAmount: taskDetails.rewardAmount,
+                tokenSymbol: tokenSymbol,
+                allowSelfCheck: taskDetails.allowSelfCheck,
+                aiReview: taskConfig.aiReview,
+                aiReviewPrompt: taskConfig.aiReviewPrompt,
+                socialRequirements: {
+                  ...(taskConfig.XPostContent && { xPost: taskConfig.XPostContent }),
+                  ...(taskConfig.XFollowUsername && { xFollow: taskConfig.XFollowUsername }),
+                  ...(taskConfig.XLikeId && { xLike: taskConfig.XLikeId }),
+                  ...(taskConfig.XRetweetId && { xRetweet: taskConfig.XRetweetId }),
+                  ...(taskConfig.DiscordChannelId && {
+                    discordServer: taskConfig.DiscordChannelId,
+                    discordInvite: taskConfig.DiscordInviteLink
+                  }),
+                }
+              }
+            }),
+          }).catch(error => {
+            console.error('Failed to send announcement:', error);
+          });
+        } catch (error) {
+          console.error('Failed to prepare announcement data:', error);
+        }
+      }
+    };
+
+    sendAnnouncement();
+  }, [
+    isConfirmed,
+    boardConfig.channelId,
+    taskBasicInfo,
+    taskConfig,
+    taskDetails,
+    selectedTypes,
+    mode,
+    tokenSymbol
+  ]);
+
 
 
   return (
