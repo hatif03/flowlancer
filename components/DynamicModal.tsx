@@ -66,6 +66,57 @@ export default function DynamicModal({
   );
   const { toast } = useToast();
 
+  // Add new status
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'confirming' | 'confirmed'>('idle');
+
+  const handleChange = (event: any) => {
+    const { name, value, type, checked } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    setSubmitStatus('submitting');
+    try {
+      const result = await onSubmit(formData);
+      if (result?.hash) {
+        setTransactionHash(result.hash as `0x${string}`);
+        setSubmitStatus('confirming');
+        toast({
+          title: "Transaction Submitted",
+          description: "Please wait for confirmation...",
+        });
+      } else if (result?.error) {
+        setSubmitStatus('idle');
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setSubmitStatus('idle');
+      toast({
+        title: "Error",
+        description: "Failed to submit transaction",
+        variant: "destructive",
+      });
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  // Use useWaitForTransactionReceipt in the component
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    error,
+  } = useWaitForTransactionReceipt({
+    hash: transactionHash as `0x${string}`,
+  });
+
+  // Modify useEffect processing confirmation status
 
 
   const buttonState = getButtonState();
