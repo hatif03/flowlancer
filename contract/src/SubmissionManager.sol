@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "./Storage.sol";
-import "./View.sol";
+import "./BoardStorage.sol";
+import "./BoardView.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
-contract SubmissionManager is Storage, View {
+contract SubmissionManager is BoardStorage, BoardView {
     using ECDSA for bytes32;
 
     event SubmissionMade(

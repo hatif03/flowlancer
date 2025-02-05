@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import abi from "@/constants/Flowlancer.json";
 import { erc20Abi, parseUnits, zeroAddress } from "viem";
 import type {
-  View,
+  BoardView,
   TaskView,
   BoardDetailView,
   CreateBoardParams,

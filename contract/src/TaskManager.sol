@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "./Storage.sol";
+import "./BoardStorage.sol";
 
 contract TaskManager is BoardStorage {
-    // 事件定义
+
     event TaskCreated(
         uint256 indexed boardId,
         uint256 indexed taskId,

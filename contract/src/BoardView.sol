@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "./Storage.sol";
+import "./BoardStorage.sol";
 
-contract View is Storage {
+contract BoardView is BoardStorage {
     struct ViewStruct {
         uint256 id;
         address creator;

@@ -4,15 +4,15 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "./Storage.sol";
-import "./View.sol";
+import "./BoardStorage.sol";
+import "./BoardView.sol";
 
 contract Flowlancer is
     Initializable,
     AccessControlUpgradeable,
     UUPSUpgradeable,
-    Storage,
-    View,
+    BoardStorage,
+    BoardView,
     TaskManager,
     SubmissionManager
 {
