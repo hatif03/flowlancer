@@ -107,7 +107,7 @@ export default function DynamicModal({
     }
   };
 
-  // 在组件中使用 useWaitForTransactionReceipt
+  // Use useWaitForTransactionReceipt in the component
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -116,7 +116,7 @@ export default function DynamicModal({
     hash: transactionHash as `0x${string}`,
   });
 
-  // 修改 useEffect 处理确认状态
+  // Modify useEffect processing confirmation status
   useEffect(() => {
     if (isConfirmed && submitStatus !== 'confirmed') {
       setSubmitStatus('confirmed');
@@ -136,7 +136,7 @@ export default function DynamicModal({
     }
   }, [isConfirmed, error, onClose, onConfirmed, submitStatus, toast]);
 
-  // 处理图片上传
+  // Handle image uploads
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
     fieldName: string
@@ -180,16 +180,16 @@ export default function DynamicModal({
     }
   };
 
-  // 当 modal 打开或 initialData 变化时，更新表单数据
+  // Update form data when modal is opened or initialData changes
   useEffect(() => {
     if (isOpen && initialData) {
       setFormData(initialData);
     } else if (!isOpen) {
-      setFormData({}); // 关闭时清空表单
+      setFormData({}); // Clear form on close
     }
   }, [isOpen, initialData]);
 
-  // 获取按钮文本和状态
+  // Get button text and status
   const getButtonState = () => {
     switch (submitStatus) {
       case 'submitting':
