@@ -66,7 +66,7 @@ export default function DynamicModal({
   );
   const { toast } = useToast();
 
-  // Add new status
+  // 添加新的状态
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'confirming' | 'confirmed'>('idle');
 
   const handleChange = (event: any) => {
@@ -107,7 +107,7 @@ export default function DynamicModal({
     }
   };
 
-  // Use useWaitForTransactionReceipt in the component
+  // 在组件中使用 useWaitForTransactionReceipt
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -116,8 +116,108 @@ export default function DynamicModal({
     hash: transactionHash as `0x${string}`,
   });
 
-  // Modify useEffect processing confirmation status
+  // 修改 useEffect 处理确认状态
+  useEffect(() => {
+    if (isConfirmed && submitStatus !== 'confirmed') {
+      setSubmitStatus('confirmed');
+      toast({
+        title: "Success",
+        description: "Transaction confirmed successfully!",
+      });
+      onConfirmed();
+      onClose();
+    } else if (error && submitStatus !== 'idle') {
+      setSubmitStatus('idle');
+      toast({
+        title: "Error",
+        description: "Transaction failed",
+        variant: "destructive",
+      });
+    }
+  }, [isConfirmed, error, onClose, onConfirmed, submitStatus, toast]);
 
+  // 处理图片上传
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fieldName: string
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("https://api.img2ipfs.org/api/v0/add", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      setFormData((prev) => ({
+        ...prev,
+        [fieldName]: data.Url,
+      }));
+
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully",
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // 当 modal 打开或 initialData 变化时，更新表单数据
+  useEffect(() => {
+    if (isOpen && initialData) {
+      setFormData(initialData);
+    } else if (!isOpen) {
+      setFormData({}); // 关闭时清空表单
+    }
+  }, [isOpen, initialData]);
+
+  // 获取按钮文本和状态
+  const getButtonState = () => {
+    switch (submitStatus) {
+      case 'submitting':
+        return {
+          text: "Submitting...",
+          disabled: true,
+          icon: <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        };
+      case 'confirming':
+        return {
+          text: "Confirming...",
+          disabled: true,
+          icon: <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        };
+      case 'confirmed':
+        return {
+          text: "Confirmed",
+          disabled: true,
+          icon: <CheckCircle className="mr-2 h-4 w-4" />
+        };
+      default:
+        return {
+          text: "Submit",
+          disabled: isUploading,
+          icon: null
+        };
+    }
+  };
 
   const buttonState = getButtonState();
 
