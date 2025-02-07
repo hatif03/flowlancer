@@ -24,26 +24,28 @@ export default function Navigation({ mobile, onClose }: NavigationProps) {
         href={href}
         onClick={onClose}
         className={cn(
-          "relative px-3 py-2 transition-colors hover:text-purple-300",
-          mobile ? "block w-full text-left text-base" : "text-sm",
+          "relative px-3 py-2 transition-all duration-300 ease-in-out hover:text-teal-400",
+          mobile ? "block w-full text-left text-lg" : "text-lg",
           isActive
-            ? "text-purple-300 font-medium"
-            : "text-muted-foreground hover:text-purple-300"
+            ? "text-teal-500 font-bold" // Active link style
+            : "text-gray-400 hover:text-teal-400" // Inactive link style
         )}
       >
         {label}
         {isActive && (
-          <span className="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-purple-500/0 via-purple-500/70 to-purple-500/0" />
+          <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-gradient-to-r from-teal-500 via-teal-300 to-teal-500 animate-pulse" />
         )}
       </Link>
     );
   };
 
   return (
-    <nav className={cn(
-      "flex",
-      mobile ? "flex-col space-y-2" : "items-center space-x-4"
-    )}>
+    <nav
+      className={cn(
+        "flex",
+        mobile ? "flex-col space-y-4 py-6" : "items-center space-x-6"
+      )}
+    >
       {links.map((link) => (
         <NavLink key={link.href} {...link} />
       ))}

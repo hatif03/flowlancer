@@ -333,7 +333,7 @@ export function useWithdrawPledgedTokens() {
 }
 
 
-export function useUpdateFlowlancer() {
+export function useUpdateBountyBoard() {
   const contractFunction = useFlowlancerFunction("updateFlowlancer");
 
   return ({

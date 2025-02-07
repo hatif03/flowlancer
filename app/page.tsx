@@ -11,35 +11,35 @@ import { Suspense } from "react";
 // Use Cases data
 const USE_CASES = [
   {
-    title: "Developer Education",
+    title: "AI-Powered Developer Onboarding",
     image: "/home/DeveloperEducation.jpg",
-    description: "Attract developers to your project ecosystem through AI-powered learning paths and incentivized development programs.",
+    description: "Empower developers by offering tailored learning paths, collaborative projects, and incentive-driven milestones, all guided by AI.",
     features: [
-      "Create collaborative study groups and track learning progress within the Bounty Board platform",
-      "Reward contributors upon completion of project milestones, incentivizing continued engagement",
-      "Utilize AI to automate code reviews, ensuring efficient and consistent evaluation of submissions"
+      "Foster collaboration through study groups and project-based learning",
+      "Reward developers with tokens and reputation for achieving key project milestones",
+      "Leverage AI for smart code evaluations and personalized development feedback"
     ],
     reverse: false
   },
   {
-    title: "Product Growth & Airdrop",
+    title: "Growth Hacking & Community Engagement",
     image: "/home/ProductTesting.jpg",
-    description: "Design engaging tasks and airdrops to attract users, boost product adoption and build vibrant communities with AI-powered community management.",
+    description: "Supercharge your growth strategy with gamified tasks, automated airdrops, and seamless community engagement driven by AI.",
     features: [
-      "Customizable social tasks for following, retweeting and engagement",
-      "AI agent for automated community engagement and support",
-      "Intelligent task verification and token distribution"
+      "Launch customizable tasks like social media engagement, reviews, and referrals",
+      "AI-driven community management with automated responses, engagement, and support",
+      "Effortless token distribution and task verification for a seamless user experience"
     ],
     reverse: true
   },
   {
-    title: "Community Building",
+    title: "Decentralized Community Empowerment",
     image: "/home/CommunityBuilding.jpg",
-    description: "Encourage DAO members to organize and participate in community activities with automated reward distribution.",
+    description: "Unlock the power of DAOs by organizing community events and rewarding active participation with automated, fair distribution systems.",
     features: [
-      "AI-assisted Discord and social media engagement tracking",
-      "Automated community event management and reward distribution",
-      "Smart contract-based governance participation incentives"
+      "AI-based engagement tracking across Discord, Telegram, and social platforms",
+      "Automated community event creation with instant reward distribution for participants",
+      "Incentivized governance participation through smart contracts and token-based rewards"
     ],
     reverse: false
   }
@@ -48,34 +48,24 @@ const USE_CASES = [
 // Features data
 const FEATURES = [
   {
-    title: "Quick Launch",
-    description: "Create community reward activities in minutes. Streamlined process for setting up bounty boards, defining tasks, and managing rewards - all in one place.",
+    title: "Effortless Task Creation",
+    description: "Create and manage community tasks quickly with a streamlined process. Set up bounty boards, define objectives, and manage rewards all from one easy-to-use platform.",
     icon: Rocket
   },
   {
-    title: "AI Review",
-    description: "Leverage AI assistance for task verification or set up multiple reviewers for flexible and efficient task assessment. Customizable review processes to match your community needs.",
+    title: "AI-Powered Task Verification",
+    description: "Automate task verification and evaluation with AI. Ensure accurate assessments and customizable review workflows for seamless community participation.",
     icon: Bot
   },
   {
-    title: "AI Community Management",
-    description: "Intelligent AI agents assist in community operations by automating announcements, task reviews, and member engagement. Seamlessly integrates with Discord for enhanced community interaction and management.",
-    icon: Users
-  },
-  {
-    title: "Smart Contract Automation",
-    description: "Automated reward distribution through smart contracts ensures accurate and timely payments. No manual intervention needed, eliminating human error and ensuring trustless execution.",
+    title: "Blockchain-Backed Rewards",
+    description: "Automate reward distribution through secure smart contracts, ensuring that participants are rewarded instantly and without error, all while maintaining transparency.",
     icon: Shield
   },
   {
-    title: "Full Transparency",
-    description: "Complete visibility of all task activities and progress. On-chain records ensure permanent and transparent history of all submissions, reviews, and reward distributions.",
+    title: "Real-Time Community Insights",
+    description: "Monitor community engagement and performance with real-time data. Track activity, participation, and growth across all channels, ensuring a proactive approach to management.",
     icon: Eye
-  },
-  {
-    title: "Social Integration",
-    description: "Seamless integration with popular platforms like Discord, Twitter, and GitHub. Verify social engagements automatically and track community growth across multiple channels.",
-    icon: Share
   }
 ];
 
@@ -100,17 +90,11 @@ function HomePageInner() {
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
       <div className="relative h-[600px] w-full">
-        <Image
-          src="/index-head.png"
-          alt="Bounty Board"
-          fill
-          className="object-cover brightness-50"
-          priority
-        />
+      
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
         <div className="relative container mx-auto h-full flex flex-col items-center justify-center text-center px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 glow-text animate-fade-in">
-            Welcome to Bounty Board
+            Welcome to Flowlancer
           </h1>
           <p className="text-base md:text-xl text-purple-200/90 max-w-3xl mb-6 md:mb-8 animate-fade-in-delay">
             A Web3-native platform revolutionizing community engagement and task
@@ -166,41 +150,52 @@ function HomePageInner() {
       </div>
 
       {/* Use Cases Section */}
-      <div className="bg-black/30 backdrop-blur-sm py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-6 md:gap-8">
-            {USE_CASES.map((useCase, index) => (
-              <div key={index} className="glass-card p-4 md:p-8 rounded-2xl">
-                <div className={`flex flex-col ${useCase.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-6 md:gap-8 items-center`}>
-                  <div className="w-full md:w-1/2">
-                    <div className="relative aspect-square max-w-[200px] md:max-w-[270px] mx-auto">
-                      <Image
-                        src={useCase.image}
-                        alt={useCase.title}
-                        fill
-                        className="rounded-xl object-cover border-2 border-purple-500/30"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full md:w-1/2 space-y-3 md:space-y-4">
-                    <h3 className="text-2xl md:text-3xl font-bold text-purple-300">
-                      {useCase.title}
-                    </h3>
-                    <div className="space-y-3 md:space-y-4 text-gray-400">
-                      <p className="text-sm md:text-base">{useCase.description}</p>
-                      <ul className="list-disc list-inside space-y-1 md:space-y-2 text-sm md:text-base">
-                        {useCase.features.map((feature, featureIndex) => (
-                          <li key={featureIndex}>{feature}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+      {/* Use Cases Section */}
+<div className="bg-gradient-to-br from-[#0b1727] via-[#102a44] to-[#1b3a56] py-16 md:py-24">
+  <div className="container mx-auto px-6">
+    <div className="grid grid-cols-1 gap-8 md:gap-12">
+      {USE_CASES.map((useCase, index) => (
+        <div 
+          key={index} 
+          className="group relative bg-white/5 border border-cyan-500/20 backdrop-blur-lg p-6 md:p-10 rounded-3xl shadow-xl transition-all duration-300 hover:border-cyan-500/50 hover:shadow-cyan-500/20"
+        >
+          <div className={`flex flex-col ${useCase.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-6 md:gap-10 items-center`}>
+            
+            {/* Image */}
+            <div className="w-full md:w-1/2">
+              <div className="relative aspect-square max-w-[220px] md:max-w-[300px] mx-auto">
+                <Image
+                  src={useCase.image}
+                  alt={useCase.title}
+                  fill
+                  className="rounded-xl object-cover border border-cyan-500/40 shadow-lg group-hover:shadow-cyan-400/50 transition-all duration-300"
+                />
               </div>
-            ))}
+            </div>
+
+            {/* Content */}
+            <div className="w-full md:w-1/2 space-y-4">
+              <h3 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-500 group-hover:from-cyan-300 group-hover:to-teal-400 transition-all duration-300">
+                {useCase.title}
+              </h3>
+              <p className="text-lg text-gray-300">
+                {useCase.description}
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-gray-400 text-base">
+                {useCase.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="transition-all duration-300 group-hover:text-gray-200">
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      ))}
+    </div>
+  </div>
+</div>
+
 
       {/* Features Section */}
       <div className="container mx-auto px-4 py-12 md:py-20">
@@ -221,10 +216,7 @@ function HomePageInner() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="mt-auto py-4 md:py-6 text-center text-xs md:text-sm text-gray-400">
-        <p>© 2024 Bounty Board. All rights reserved.</p>
-      </footer>
+    
     </div>
   );
 }
