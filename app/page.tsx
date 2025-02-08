@@ -61,12 +61,8 @@ const FEATURES = [
     title: "Blockchain-Backed Rewards",
     description: "Automate reward distribution through secure smart contracts, ensuring that participants are rewarded instantly and without error, all while maintaining transparency.",
     icon: Shield
-  },
-  {
-    title: "Real-Time Community Insights",
-    description: "Monitor community engagement and performance with real-time data. Track activity, participation, and growth across all channels, ensuring a proactive approach to management.",
-    icon: Eye
   }
+
 ];
 
 function HomePageInner() {
@@ -89,67 +85,40 @@ function HomePageInner() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <div className="relative h-[600px] w-full">
-      
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
-        <div className="relative container mx-auto h-full flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 glow-text animate-fade-in">
-            Welcome to Flowlancer
-          </h1>
-          <p className="text-base md:text-xl text-purple-200/90 max-w-3xl mb-6 md:mb-8 animate-fade-in-delay">
-            A Web3-native platform revolutionizing community engagement and task
-            management. Create, manage, and participate in bounty tasks with
-            transparency and efficiency.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 mt-4">
-            <Link
-              href="/boards"
-              className="w-full sm:w-auto neon-button-primary group animate-fade-in-delay-2"
-            >
-              <span className="relative z-10 flex items-center justify-center">
-                Explore Boards
-                <svg
-                  className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </span>
-            </Link>
-            <button
-              type="button"
-              onClick={handleCreateBoard}
-              className="w-full sm:w-auto neon-button-secondary group animate-fade-in-delay-2"
-            >
-              <span className="relative z-10 flex items-center justify-center">
-                Create Board
-                <svg
-                  className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <div className="relative h-[650px] w-full bg-gradient-to-br from-[#0a192f] via-[#112240] to-[#233554]">
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-transparent" />
 
-      {/* Use Cases Section */}
+  <div className="relative container mx-auto h-full flex flex-col items-center justify-center text-center px-6">
+    {/* Title */}
+    <h1 className="text-5xl md:text-7xl pb-3 font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-400 shadow-md drop-shadow-lg animate-fade-in">
+      Empowering Web3 Innovation
+    </h1>
+
+    {/* Subtitle */}
+    <p className="text-lg md:text-2xl text-gray-300 mt-4 max-w-3xl animate-fade-in-delay">
+      A decentralized platform for seamless collaboration, bounties, and task management—powered by the blockchain.
+    </p>
+
+    {/* Buttons */}
+    <div className="flex flex-col sm:flex-row gap-5 mt-6 md:mt-8">
+      <Link href="/boards" className="relative px-6 py-3 text-lg font-medium text-white bg-gradient-to-r from-teal-500 to-blue-600 rounded-xl shadow-lg transition-all duration-300 hover:from-teal-400 hover:to-blue-500 transform hover:scale-105">
+        Explore Boards
+      </Link>
+
+      <button
+        type="button"
+        onClick={handleCreateBoard}
+        className="relative px-6 py-3 text-lg font-medium text-cyan-300 bg-transparent border border-cyan-500/60 rounded-xl shadow-md backdrop-blur-md transition-all duration-300 hover:text-cyan-200 hover:border-cyan-400 transform hover:scale-105"
+      >
+        Create Board
+      </button>
+    </div>
+  </div>
+</div>
+
+
+     
       {/* Use Cases Section */}
 <div className="bg-gradient-to-br from-[#0b1727] via-[#102a44] to-[#1b3a56] py-16 md:py-24">
   <div className="container mx-auto px-6">
@@ -197,24 +166,27 @@ function HomePageInner() {
 </div>
 
 
-      {/* Features Section */}
-      <div className="container mx-auto px-4 py-12 md:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-          {FEATURES.map((feature, index) => (
-            <div key={index} className="glass-card p-4 md:p-8 rounded-2xl">
-              <div className="h-12 w-12 md:h-16 md:w-16 mx-auto mb-4 md:mb-6 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center">
-                <feature.icon className="h-6 w-6 md:h-8 md:w-8 text-white" />
-              </div>
-              <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-purple-300">
-                {feature.title}
-              </h2>
-              <p className="text-sm md:text-base text-gray-400">
-                {feature.description}
-              </p>
-            </div>
-          ))}
+
+     {/* Features Section */}
+<div className="container mx-auto px-4 py-12 md:py-20">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+    {FEATURES.map((feature, index) => (
+      <div key={index} className="glass-card p-6 md:p-10 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600">
+        <div className="h-16 w-16 md:h-20 md:w-20 mx-auto mb-6 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+          <feature.icon className="h-8 w-8 md:h-10 md:w-10 text-white" />
         </div>
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white hover:text-pink-200 transition-colors">
+          {feature.title}
+        </h2>
+        <p className="text-lg md:text-xl text-gray-200 opacity-90 hover:opacity-100 transition-opacity">
+          {feature.description}
+        </p>
       </div>
+    ))}
+  </div>
+</div>
+
+
 
     
     </div>

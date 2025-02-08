@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { SessionProvider } from "next-auth/react";
 import Navigation from '@/components/Navigation';
 import { TelegramAuthProvider } from '@/providers/TelegramAuthContext';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -24,74 +24,61 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
         <title>Flowlancer</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </head>
-      <body>
-        <SessionProvider>
-          <Web3Providers>
-            <TelegramAuthProvider>
-              {/* Header */}
-              <div className="bg-black/40 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
-                <div className="container mx-auto py-2 md:py-4 px-4">
-                  <div className="flex items-center justify-between">
-                    <Link href="/" className="flex-shrink-0">
-                      <div className="flex items-center group">
-                        <div className="relative">
-                          <Image
-                            src='/logo.svg'
-                            alt='logo'
-                            width={32}
-                            height={32}
-                            className="mr-1 transform group-hover:scale-110 transition-transform duration-300 md:w-10 md:h-10"
-                          />
-                          <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full group-hover:bg-purple-500/30 transition-colors duration-300" />
-                        </div>
-                        <h1 className="text-lg md:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-600 to-purple-800 hover:from-purple-500 hover:via-purple-700 hover:to-purple-900 transition-all duration-300 transform hover:scale-105">
-                          BountyBoard
-                        </h1>
-                      </div>
-                    </Link>
+      <body className="bg-gradient-to-bl from-[#1A2A3D] via-[#243B52] to-[#13232C] text-gray-100 font-sans">
+  <SessionProvider>
+    <Web3Providers>
+      <TelegramAuthProvider>
+        {/* Header */}
+        <header className="fixed top-0 left-0 w-full bg-[#0D1B29]/90 backdrop-blur-md shadow-2xl border-b border-purple-700/50 z-50">
+          <div className="container mx-auto px-8 py-6 flex items-center justify-between">
+            
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-4">
+              <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-400 hover:to-teal-500 transition-all duration-300 transform hover:scale-110">
+                Flowlancer
+              </h1>
+            </Link>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:block">
-                      <Navigation />
-                    </div>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
+              <Navigation />
+              <ConnectWallet />
+            </div>
 
-                    {/* Connect Wallet Button */}
-                    <div className="flex items-center gap-2">
-                      <ConnectWallet />
-                      {/* Mobile Menu Button */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="md:hidden"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                      >
-                        <Menu className="h-5 w-5" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden relative z-50 text-purple-400 hover:text-purple-300"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+            </Button>
+          </div>
+        </header>
 
-                {/* Mobile Navigation Dropdown */}
-                <div
-                  className={cn(
-                    "md:hidden overflow-hidden transition-all duration-300 border-t border-purple-500/20 bg-black/60 backdrop-blur-lg",
-                    isMenuOpen ? "max-h-64" : "max-h-0"
-                  )}
-                >
-                  <div className="container mx-auto py-4 px-4">
-                    <Navigation mobile onClose={() => setIsMenuOpen(false)} />
-                  </div>
-                </div>
-              </div>
+        {/* Mobile Sidebar Navigation */}
+        <div
+          className={cn(
+            "fixed inset-0 bg-[#0D1B29]/80 backdrop-blur-lg transition-all duration-500 flex flex-col items-center justify-center",
+            isMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+          )}
+        >
+          <div className="container mx-auto flex flex-col gap-6 items-center">
+            <Navigation mobile onClose={() => setIsMenuOpen(false)} />
+            <ConnectWallet />
+          </div>
+        </div>
 
-              <main className="min-h-[calc(100vh-4rem)]">
-                {children}
-              </main>
-            </TelegramAuthProvider>
-          </Web3Providers>
-        </SessionProvider>
-        <Toaster />
-      </body>
+        {/* Main Content */}
+        <main className="pt-32 md:pt-40 min-h-screen px-8 md:px-16 transition-all duration-500">
+          {children}
+        </main>
+      </TelegramAuthProvider>
+    </Web3Providers>
+  </SessionProvider>
+  <Toaster />
+</body>
     </html>
   );
 };
