@@ -563,13 +563,13 @@ export default function TaskList({
                         {Number(task.maxCompletions)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-purple-300/70">
+                    {/* <div className="flex items-center gap-2 text-purple-300/70">
                       <Calendar className="h-4 w-4 text-purple-400" />
                       <span>
                         Created:{" "}
                         {format(new Date(Number(task.createdAt) * 1000), "PPP")}
                       </span>
-                    </div>
+                    </div> */}
                     <div className="flex items-center gap-2 text-purple-300/70">
                       <Clock className="h-4 w-4 text-purple-400" />
                       <span>

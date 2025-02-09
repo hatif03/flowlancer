@@ -10,9 +10,9 @@ contract FlowlancerScript is Script {
     function setUp() public {}
 
     function run() public {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address signerAddress = vm.envAddress("SIGNER_ADDRESS");
-        address upgradeAddress = vm.envAddress("UPGRADE_ADDRESS");
+        uint256 deployerPrivateKey = vm.envUint("6afe903876b633f2dfcc7086ea5f2b8139f9165f72d5a8ff2c2c273d9d4153ac");
+        address signerAddress = vm.envAddress("0xA2f263423AFcDBA4E656891cb46567250a8e4C50");
+        address upgradeAddress = vm.envAddress("0x0000000000000000000000000000000000000000");
 
         vm.startBroadcast(deployerPrivateKey);
 

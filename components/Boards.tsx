@@ -32,10 +32,10 @@ const BoardCard = ({ board }: { board: BoardView }) => {
               <User2 className="h-4 w-4" />
               <Address address={board.creator} />
             </div>
-            <div className="flex items-center gap-1">
+            {/* <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               {format(new Date(parseInt(board.createdAt.toString()) * 1000), 'PPP')}
-            </div>
+            </div> */}
             <div className="flex items-center gap-1">
               <Coins className="h-4 w-4" />
               {formatUnits(BigInt(board.totalPledged), 18)} {tokenSymbol ?? ''}

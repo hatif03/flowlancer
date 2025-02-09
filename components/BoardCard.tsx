@@ -73,10 +73,10 @@ export default function BoardCard({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
+              {/* <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
                 {format(new Date(Number(board.createdAt) * 1000), 'PPP')}
-              </div>
+              </div> */}
               <div className="flex items-center gap-1">
                 <Coins className="h-4 w-4" />
                 <span className="truncate">

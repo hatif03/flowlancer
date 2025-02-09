@@ -470,11 +470,11 @@ function BoardDetails({
           <strong className="flex-shrink-0">Description:</strong>
           <span className="break-words">{board.description}</span>
         </div>
-        <div className="flex items-center gap-2 text-muted-foreground mb-2">
+        {/* <div className="flex items-center gap-2 text-muted-foreground mb-2">
           <Calendar className="h-4 w-4" />
           <strong>Created:</strong>{" "}
           {format(new Date(Number(board.createdAt) * 1000), "PPP")}
-        </div>
+        </div> */}
         <div className="flex items-center gap-2 text-muted-foreground mb-2">
           <Coins className="h-4 w-4" />
           <strong>Reward Token:</strong>{" "}
